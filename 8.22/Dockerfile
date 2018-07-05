@@ -54,20 +54,19 @@ RUN set -x \
     && apt-get purge -y --auto-remove make
 
 ENV SENTRY_VERSION 8.22.0
+ENV SF_SENTRY_VERSION 8.22.1-sf.4
 
 RUN set -x \
     && apt-get update && apt-get install -y --no-install-recommends wget g++ && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /usr/src/sentry \
-    && wget -O /usr/src/sentry/sentry-${SENTRY_VERSION}-py27-none-any.whl "https://github.com/getsentry/sentry/releases/download/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}-py27-none-any.whl" \
-    && wget -O /usr/src/sentry/sentry-${SENTRY_VERSION}-py27-none-any.whl.asc "https://github.com/getsentry/sentry/releases/download/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}-py27-none-any.whl.asc" \
+    && wget -O /usr/src/sentry/sentry-${SF_SENTRY_VERSION}.tar.gz "https://github.com/StarfishStorage/sentry/releases/download/${SF_SENTRY_VERSION}/sentry-${SF_SENTRY_VERSION}.tar.gz" \
     && wget -O /usr/src/sentry/sentry_plugins-${SENTRY_VERSION}-py2.py3-none-any.whl "https://github.com/getsentry/sentry/releases/download/${SENTRY_VERSION}/sentry_plugins-${SENTRY_VERSION}-py2.py3-none-any.whl" \
     && wget -O /usr/src/sentry/sentry_plugins-${SENTRY_VERSION}-py2.py3-none-any.whl.asc "https://github.com/getsentry/sentry/releases/download/${SENTRY_VERSION}/sentry_plugins-${SENTRY_VERSION}-py2.py3-none-any.whl.asc" \
     && export GNUPGHOME="$(mktemp -d)" \
     && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys D8749766A66DD714236A932C3B2D400CE5BBCA60 \
-    && gpg --batch --verify /usr/src/sentry/sentry-${SENTRY_VERSION}-py27-none-any.whl.asc /usr/src/sentry/sentry-${SENTRY_VERSION}-py27-none-any.whl \
     && gpg --batch --verify /usr/src/sentry/sentry_plugins-${SENTRY_VERSION}-py2.py3-none-any.whl.asc /usr/src/sentry/sentry_plugins-${SENTRY_VERSION}-py2.py3-none-any.whl \
     && pip install \
-        /usr/src/sentry/sentry-${SENTRY_VERSION}-py27-none-any.whl \
+        /usr/src/sentry/sentry-${SF_SENTRY_VERSION}.tar.gz \
         /usr/src/sentry/sentry_plugins-${SENTRY_VERSION}-py2.py3-none-any.whl \
     && sentry --help \
     && sentry plugins list \
@@ -81,6 +80,7 @@ RUN mkdir -p $SENTRY_CONF && mkdir -p $SENTRY_FILESTORE_DIR
 
 COPY sentry.conf.py /etc/sentry/
 COPY config.yml /etc/sentry/
+COPY scripts/* /usr/local/scripts/sentry/
 
 COPY docker-entrypoint.sh /entrypoint.sh
 

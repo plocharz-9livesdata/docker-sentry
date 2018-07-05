@@ -29,6 +29,8 @@
 #  SENTRY_MAILGUN_API_KEY
 #  SENTRY_SINGLE_ORGANIZATION
 #  SENTRY_SECRET_KEY
+#  SENTRY_URL_PREFIX
+#  SENTRY_ADMIN_EMAIL
 #  GITHUB_APP_ID
 #  GITHUB_API_SECRET
 #  BITBUCKET_CONSUMER_KEY
@@ -295,6 +297,14 @@ if 'SENTRY_RUNNING_UWSGI' not in os.environ and len(secret_key) < 32:
     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
 SENTRY_OPTIONS['system.secret-key'] = secret_key
+
+admin_email = env('SENTRY_ADMIN_EMAIL')
+if admin_email:
+    SENTRY_OPTIONS['system.admin-email'] = admin_email
+
+url_prefix = env('SENTRY_URL_PREFIX')
+if url_prefix:
+    SENTRY_OPTIONS['system.url-prefix'] = url_prefix
 
 if 'GITHUB_APP_ID' in os.environ:
     GITHUB_EXTENDED_PERMISSIONS = ['repo']
