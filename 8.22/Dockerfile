@@ -54,7 +54,7 @@ RUN set -x \
     && apt-get purge -y --auto-remove make
 
 ENV SENTRY_VERSION 8.22.0
-ENV SF_SENTRY_VERSION 8.22.1-sf.5
+ENV SF_SENTRY_VERSION 8.22.1-sf.6
 
 RUN set -x \
     && apt-get update && apt-get install -y --no-install-recommends wget g++ && rm -rf /var/lib/apt/lists/* \
